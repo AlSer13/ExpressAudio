@@ -1,0 +1,40 @@
+<html>
+
+<head>
+    <title>ExpressAudio</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+<h1>ExpressAudio</h1>
+<p>Welcome to ExpressAudio</p>
+<audio controls id="aud">
+    <source src="PUK.mp3" type="audio/mpeg">
+    <source src="PUK.ogg" type="audio/ogg">
+</audio>
+<input type="checkbox" title="subscribe">subscribe
+</body>
+<script src="script.js"></script>
+<script>
+    const socket = io();
+    const aud = document.getElementById("aud");
+    aud.onplay = () => {
+        socket.emit('play', aud.currentTime);
+        return true;
+    };
+    aud.onpause = () => {
+        socket.emit('pause', aud.currentTime);
+        return true;
+    };
+    socket.on('played', (time) => {
+        aud.currentTime = time;
+        aud.play();
+        // console.log("played");
+    });
+    socket.on('paused', (time) => {
+        aud.currentTime = time;
+        aud.pause();
+        // console.log("paused");
+    });
+</script>
+</html>
